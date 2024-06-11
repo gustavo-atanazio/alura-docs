@@ -18,4 +18,4 @@ HTTPServer.listen(PORT, () => console.log(`Servidor rodando em http://localhost:
 
 const io = new Server(HTTPServer);
 
-io.on('connection', () => console.log('Usuário conectado.'));
+export default io;

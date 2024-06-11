@@ -5,7 +5,7 @@
     "type": "module",
     "license": "MIT",
     "scripts": {
-        "dev": "nodemon --exec tsx src/server.ts"
+        "dev": "nodemon --exec tsx src/socket.ts"
     },
     "dependencies": {
         "express": "^4.19.2",
