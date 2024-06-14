@@ -1,45 +1,25 @@
 import io from './server';
+import { findDocument, updateDocument } from './documentsDB';
 
 type EditorDeTexto = {
     text: string;
     documentName: string;
 };
 
-const documents = [
-    {
-        name: 'JavaScript',
-        text: ''
-    },
-    {
-        name: 'Node',
-        text: ''
-    },
-    {
-        name: 'Socket.io',
-        text: ''
-    }
-];
-
-function findDocument(name: string) {
-    const document = documents.find(doc => doc.name === name);
-    return document;
-}
-
 io.on('connection', socket => {
     console.log(`Usuário conectado. ID: ${socket.id}`);
 
-    socket.on('selecionar_documento', (documentName, retrieveText) => {
+    socket.on('selecionar_documento', async (documentName: string, retrieveText: (text: string) => void) => {
         socket.join(documentName);
-        const document = findDocument(documentName);
+        const document = await findDocument(documentName);
 
         if (document) retrieveText(document.text);
     });
 
-    socket.on('editor_de_texto', ({ text, documentName }: EditorDeTexto) => {
-        const document = findDocument(documentName);
+    socket.on('editor_de_texto', async ({ text, documentName }: EditorDeTexto) => {
+        const update = await updateDocument(documentName, text);
 
-        if (document) {
-            document.text = text;
+        if (update && update.modifiedCount) {
             socket.to(documentName).emit('editor_de_texto_client', text);
         }
     });
